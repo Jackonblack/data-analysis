@@ -1,0 +1,67 @@
+###Python环境搭建
+
+# 创建虚拟环境（Python 3.11.9）
+python -m venv venv
+# 激活虚拟环境（Windows 11 PowerShell）
+.\venv\Scripts\Activate.ps1
+# 官方安装工具/-i 指定镜像源
+pip install requests beautifulsoup4 pandas pymysql matplotlib -i https://pypi.tuna.tsinghua.edu.cn/simple
+# 验证依赖安装成功
+pip list
+# 预导入验证
+python -c "import requests, bs4, pandas, pymysql, matplotlib; print('所有依赖导入成功')"
+
+
+
+
+
+
+
+
+
+###MySQL
+
+# 创建MySQL专用用户
+CREATE USER 'movie_user'@'localhost' IDENTIFIED WITH mysql_native_password BY 'Mia@521.';
+GRANT ALL PRIVILEGES ON movie_analysis.* TO 'movie_user'@'localhost';
+FLUSH PRIVILEGES;
+# 查看所有用户
+SELECT user, host FROM mysql.user;
+# 查看用户、主机、密码状态、锁定状态等
+SELECT user, host, authentication_string, account_locked, password_expired 
+FROM mysql.user;
+# 查看用户权限
+SHOW GRANTS FOR '用户名'@'主机名';
+#删除特定用户
+DROP USER '用户名'@'主机名';
+#删除特定数据库
+DROP DATABASE database_name;
+#删除特定表
+DROP TABLE table_name;
+#清空表数据，但保留结构
+TRUNCATE TABLE table_name;
+#查看所有数据库
+SHOW DATABASES;
+#使用特定数据库
+USE database_name;
+#查看当前数据库下的所有表
+SHOW TABLES;
+#查看表结构
+DESCRIBE table_name;
+# 查看建表语句
+SHOW CREATE TABLE table_name;
+
+
+
+###powershell
+
+#使用MySQL执行.sql文件建表建库
+cmd /c "mysql -u root -p < create_table.sql"
+# 验证电影表总数据量
+mysql -u root -p -e "USE movie_analysis; SELECT COUNT(*) AS 电影总条数 FROM movie;"
+# 查看前10条核心电影数据
+mysql -u root -p -e "USE movie_analysis; SELECT title, score, area, duration FROM movie LIMIT 10;"
+# 验证索引创建成功
+mysql -u root -p -e "USE movie_analysis; SHOW INDEX FROM movie;"
+# 默认输出为utf8mb4
+cmd /c "mysql -u root -p --default-character-set=utf8mb4 < analysis.sql > analysis_result.txt"
