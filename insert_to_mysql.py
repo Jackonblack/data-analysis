@@ -1,12 +1,13 @@
+###导入依赖
 import pandas as pd
 import pymysql
 import logging
 import json
 import os
 import numpy as np
-import ast  # 新增：用于把字符串解析回列表
+import ast  
 
-# ===================== 数据库配置区 =====================
+###基本配置
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MYSQL_CONFIG = {
     "host": "localhost",
@@ -18,9 +19,8 @@ MYSQL_CONFIG = {
 }
 CLEAN_DATA_PATH = os.path.join(BASE_DIR, "movie_clean_data.csv")
 BATCH_SIZE = 20
-# ======================================================
 
-# 日志配置
+###日志配置
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
@@ -30,23 +30,19 @@ logging.basicConfig(
     ]
 )
 
+###函数1：电影类型字符串转列表
 def parse_category_str(category_str):
-    """
-    核心新增：把CSV中的字符串类型解析回列表
-    """
     if pd.isna(category_str):
         return ["未知类型"]
     try:
-        # 尝试用ast.literal_eval解析（最安全）
-        return ast.literal_eval(str(category_str))
+        return ast.literal_eval(str(category_str))   #尝试用ast.literal_eval解析
     except:
         try:
-            # 备用：尝试用json.loads解析
-            return json.loads(str(category_str))
+            return json.loads(str(category_str))   #尝试用json.loads解析
         except:
-            # 兜底：返回未知类型
             return ["未知类型"]
 
+###函数2：数据清洗，空值过滤
 def clean_nan_values(df):
     df = df.copy()
     df["评分"] = df["评分"].fillna(0.0)
@@ -54,10 +50,10 @@ def clean_nan_values(df):
     df["标题"] = df["标题"].fillna("未知标题")
     df["地区"] = df["地区"].fillna("未知地区")
     df["上映时间"] = df["上映时间"].fillna("未知上映时间")
-    # 核心修改：解析类型字段
     df["类型"] = df["类型"].apply(parse_category_str)
     return df
 
+###函数3：将数据批量插入MySQL数据库
 def batch_insert_data(clean_df):
     clean_df = clean_nan_values(clean_df)
     total_count = len(clean_df)
@@ -99,11 +95,11 @@ def batch_insert_data(clean_df):
 
     logging.info(f"电影表插入完成，累计成功插入：{success_count}条")
 
+###程序入口
 if __name__ == "__main__":
     clean_df = pd.read_csv(CLEAN_DATA_PATH, encoding="utf-8-sig")
     batch_insert_data(clean_df)
     
-    # 验证
     conn = pymysql.connect(**MYSQL_CONFIG)
     try:
         cursor = conn.cursor()

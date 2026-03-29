@@ -1,4 +1,4 @@
--- 1. 创建业务数据库，统一utf8mb4编码，避免中文乱码（MySQL 8.0默认推荐）
+-- 创建数据库，并设置编码形式
 CREATE DATABASE IF NOT EXISTS movie_analysis 
 DEFAULT CHARACTER SET utf8mb4 
 COLLATE utf8mb4_unicode_ci;
@@ -6,7 +6,7 @@ COLLATE utf8mb4_unicode_ci;
 -- 使用该数据库
 USE movie_analysis;
 
--- 2. 创建电影信息主表（适配当前字段体系）
+-- 创建电影信息主表
 CREATE TABLE IF NOT EXISTS movie (
     movie_id INT PRIMARY KEY AUTO_INCREMENT COMMENT '电影唯一ID',
     title VARCHAR(100) NOT NULL COMMENT '电影标题',

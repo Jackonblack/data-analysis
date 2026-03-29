@@ -12,13 +12,6 @@ pip list
 python -c "import requests, bs4, pandas, pymysql, matplotlib; print('所有依赖导入成功')"
 
 
-
-
-
-
-
-
-
 ###MySQL
 
 # 创建MySQL专用用户

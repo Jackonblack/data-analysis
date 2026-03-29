@@ -4,7 +4,7 @@ SET NAMES utf8mb4;
 SET CHARACTER SET utf8mb4;
 SET collation_connection = utf8mb4_unicode_ci;
 
--- 分析1：评分分布
+--分析1：评分分布
 SELECT
     score_level AS '评分等级',
     movie_count AS '电影数量',
@@ -30,7 +30,7 @@ FROM (
 ) AS temp
 ORDER BY movie_count DESC;
 
--- 分析2：地区电影统计
+--分析2：地区电影统计
 SELECT
     area AS '上映地区',
     COUNT(*) AS '电影数量',
@@ -42,7 +42,7 @@ GROUP BY area
 HAVING COUNT(*)>=2
 ORDER BY AVG(score) DESC;
 
--- 分析3：时长区间与评分
+--分析3：时长区间与评分
 SELECT
     CASE
         WHEN duration < 60 THEN '60分钟以下'
@@ -58,7 +58,7 @@ WHERE duration IS NOT NULL
 GROUP BY `时长区间`
 ORDER BY AVG(score) DESC;
 
--- 分析4：高分电影列表
+--分析4：高分电影列表
 SELECT
     title AS '电影名称',
     score AS '评分',

@@ -1,9 +1,10 @@
+###导入依赖
 import pymysql
 import pandas as pd
 import matplotlib.pyplot as plt
 import os
 
-# ===================== 配置区 =====================
+###基本配置
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MYSQL_CONFIG = {
     "host": "localhost",
@@ -13,18 +14,18 @@ MYSQL_CONFIG = {
     "database": "movie_analysis",
     "charset": "utf8mb4"
 }
-# ======================================================
 
 plt.rcParams["font.sans-serif"] = ["SimHei"]
 plt.rcParams["axes.unicode_minus"] = False
 
+###函数1：读取mysql数据
 def get_data_from_mysql(sql):
     conn = pymysql.connect(**MYSQL_CONFIG)
     df = pd.read_sql(sql, conn)
     conn.close()
     return df
 
-# ---------------------- 可视化1：评分分布饼图 ----------------------
+###函数2：生成评分分布饼图
 def plot_score_distribution():
     sql = """
     SELECT 
@@ -38,7 +39,6 @@ def plot_score_distribution():
     """
     df = get_data_from_mysql(sql)
 
-    # 修复：转成列表，彻底解决类型警告
     labels = df["score_level"].tolist()
     values = df["movie_count"].tolist()
 
@@ -52,9 +52,9 @@ def plot_score_distribution():
     plt.title("电影评分分布", fontsize=14, fontweight="bold")
     plt.savefig(os.path.join(BASE_DIR, "评分分布饼图.png"), bbox_inches="tight", dpi=300)
     plt.close()
-    print("✅ 评分分布饼图已生成")
+    print("评分分布饼图已生成")
 
-# ---------------------- 可视化2：时长区间与评分 ----------------------
+###函数3：生成时长区间与评分柱状图
 def plot_duration_score():
     sql = """
     SELECT 
@@ -79,9 +79,9 @@ def plot_duration_score():
     plt.title("各时长区间平均评分", fontsize=14)
     plt.savefig(os.path.join(BASE_DIR, "时长与评分柱状图.png"), bbox_inches="tight", dpi=300)
     plt.close()
-    print("✅ 时长与评分柱状图已生成")
+    print("时长与评分柱状图已生成")
 
-# ---------------------- 可视化3：地区电影数量 ----------------------
+###函数4：生产地区电影数量柱状图
 def plot_area_count():
     sql = """
     SELECT area, COUNT(*) AS cnt
@@ -97,11 +97,11 @@ def plot_area_count():
     plt.xticks(rotation=45)
     plt.savefig(os.path.join(BASE_DIR, "地区电影数量柱状图.png"), bbox_inches="tight", dpi=300)
     plt.close()
-    print("✅ 地区电影数量图已生成")
+    print("地区电影数量图已生成")
 
-# ---------------------- 主程序 ----------------------
+###程序入口主程序
 if __name__ == "__main__":
     plot_score_distribution()
     plot_duration_score()
     plot_area_count()
-    print("\n🎉 所有图表生成完成！")
+    print("\n所有图表生成完成！")
